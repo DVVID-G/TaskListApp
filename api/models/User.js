@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const bcrypt = require('bcrypt');
 /**
  * User schema definition.
  * 
@@ -61,7 +61,11 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-
+userSchema.pre('save', async function(next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+});
 /**
  * Mongoose model for the User collection.
  * Provides an interface to interact with user documents.
