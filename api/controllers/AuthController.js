@@ -1,6 +1,6 @@
 // api/controllers/AuthController.js
 const UserDAO = require("../dao/UserDAO");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const AuthController = {
@@ -33,7 +33,7 @@ const AuthController = {
           email: user.email
         }
       });
-    } catch (err) {
+    } catch (error) {
       res.status(500).json({ message: "Error en el servidor" });
     }
   }
