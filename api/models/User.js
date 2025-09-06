@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
     minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
     validate: {
         validator: function(value) {
-            return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(value);
+            return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(value);
         },
     message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial'
   },
