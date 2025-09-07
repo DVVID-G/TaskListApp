@@ -15,7 +15,7 @@ class GlobalController {
      * @async
      * @param {import('express').Request} req - Express request object containing the data in `req.body`.
      * @param {import('express').Response} res - Express response object.
-     * @returns {Promise<void>} Sends status 201 with the created document, or 400 on error.
+     * @returns {Promise<void>} Sends status 201 with the created document, or 401 on error.
      */
     async create(req, res) {
         console.log("Creating item with data:", req.body);

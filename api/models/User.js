@@ -42,23 +42,32 @@ const userSchema = new mongoose.Schema({
     minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
     validate: {
         validator: function(value) {
-            return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(value);
+            return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(value);
         },
     message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial'
   },
-  confirmPassword: {
-    type: String,
-    required: [true, 'La confirmación de contraseña es obligatoria'],
-    validate: {
-      validator: function(value) {
-        return value === this.password;
-      },
-      message: 'Las contraseñas no coinciden'
-    }
-},
+
 }, },
 {
   timestamps: true
+});
+
+// Campo virtual para confirmPassword (no se guarda en la BD)
+userSchema.virtual('confirmPassword')
+  .set(function(value) { this._confirmPassword = value; })
+  .get(function() { return this._confirmPassword; });
+
+// Hook de validación para comparar password y confirmPassword
+userSchema.pre('validate', function(next) {
+  if (this.isNew || this.isModified('password')) {
+    if (!this._confirmPassword) {
+      this.invalidate('confirmPassword', 'La confirmación de contraseña es obligatoria');
+    }
+    if (this.password !== this._confirmPassword) {
+      this.invalidate('confirmPassword', 'Las contraseñas no coinciden');
+    }
+  }
+  next();
 });
 
 userSchema.pre('save', async function(next) {
