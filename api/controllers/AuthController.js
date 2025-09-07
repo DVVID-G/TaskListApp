@@ -33,7 +33,9 @@ const AuthController = {
           email: user.email
         }
       });
-    } catch (error) {
+    } 
+    catch (error) {
+      console.error(error); 
       res.status(500).json({ message: "Error en el servidor" });
     }
   }
