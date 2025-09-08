@@ -12,11 +12,18 @@ const AuthController = {
       if (!user) {
         return res.status(401).json({ message: "Credenciales inválidas" });
       }
+      if (user.bloqueada) {
+        return res.status(423).json({ message: "Cuenta temporalmente bloqueada" });
+      }
       // Comparar contraseña
       const valid = await bcrypt.compare(password, user.password);
       if (!valid) {
+        // Aquí puedes incrementar el contador de intentos fallidos usando el DAO
+        await UserDAO.model.updateOne({ _id: user._id }, { $inc: { intentosFallidos: 1 } });
         return res.status(401).json({ message: "Credenciales inválidas" });
       }
+      // Si login exitoso, reinicia el contador de intentos
+      await UserDAO.model.updateOne({ _id: user._id }, { $set: { intentosFallidos: 0 } });
       // Generar JWT
       const token = jwt.sign(
         { id: user._id, email: user.email },
@@ -35,8 +42,10 @@ const AuthController = {
       });
     } 
     catch (error) {
-      console.error(error); 
-      res.status(500).json({ message: "Error en el servidor" });
+      if (process.env.NODE_ENV === 'development') {
+        console.error(error);
+      }
+      res.status(500).json({ message: "Inténtalo de nuevo más tarde" });
     }
   }
 };
