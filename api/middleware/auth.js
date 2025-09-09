@@ -1,5 +1,16 @@
 const jwt = require("jsonwebtoken");
 
+/**
+ * Middleware de autenticación JWT para rutas protegidas.
+ * Verifica el token enviado en el header Authorization y agrega el usuario decodificado a req.user.
+ * Si el token es inválido o no existe, responde con 401.
+ *
+ * @function
+ * @param {import('express').Request} req - Objeto de solicitud Express.
+ * @param {import('express').Response} res - Objeto de respuesta Express.
+ * @param {import('express').NextFunction} next - Función para pasar al siguiente middleware.
+ * @returns {void}
+ */
 
 module.exports = (req, res, next) => {
   const authHeader = req.headers.authorization;
