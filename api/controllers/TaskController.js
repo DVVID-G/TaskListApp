@@ -1,18 +1,26 @@
 const GlobalController = require("./GlobalController");
 const TaskDAO = require("../dao/TaskDAO");
 
-
+/**
+ * Controlador para la gestión de tareas.
+ * Hereda métodos genéricos de GlobalController y define lógica específica para tareas.
+ * @class
+ * @extends GlobalController
+ */
 
 class TaskController extends GlobalController {
-
+    /**
+     * Inicializa el controlador de tareas con el DAO correspondiente.
+     */
     constructor() {
         super(TaskDAO);
     }
     
     /**
      * Obtiene todas las tareas del usuario autenticado, ordenadas por fecha ascendente.
-     * @param {Object} req - Objeto de solicitud Express (debe tener req.user.id).
-     * @param {Object} res - Objeto de respuesta Express.
+     * @param {import('express').Request} req - Objeto de solicitud Express (debe tener req.user.id).
+     * @param {import('express').Response} res - Objeto de respuesta Express.
+     * @returns {Promise<void>}
      */
     async getAll(req, res) {
         if (process.env.NODE_ENV === 'development') {
@@ -27,8 +35,15 @@ class TaskController extends GlobalController {
             if (process.env.NODE_ENV === 'development') console.error(error);
             res.status(500).json({ message: "No pudimos obtener tus tareas, inténtalo más tarde" });
         }
-    }
+    }   
 
+    /**
+     * Crea una nueva tarea asociada al usuario autenticado.
+     * @param {import('express').Request} req - Objeto de solicitud Express (debe tener req.user.id y body con title, description, status).
+     * @param {import('express').Response} res - Objeto de respuesta Express.
+     * @returns {Promise<void>}
+     */
+    
     async create(req, res) {
         try {
             const userId = req.user.id;
