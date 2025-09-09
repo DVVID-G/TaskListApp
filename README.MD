@@ -1,84 +1,146 @@
-# Recuperación de Contraseña
+# TaskListApp - API Backend
 
-Este proyecto implementa un flujo seguro de recuperación y restablecimiento de contraseña para usuarios registrados.
+Este proyecto es el backend de una aplicación de gestión de tareas personales, con autenticación de usuarios, recuperación de contraseña y manejo seguro de datos.
 
 ---
 
-## 🛠️ Flujo de recuperación
+## ✨ Funcionalidades principales
 
-### 1. Solicitud de recuperación
+### 1. Autenticación y gestión de usuarios
 
-- El usuario accede a `/forgot-password` y envía su correo electrónico.
-- El backend responde siempre con **HTTP 202 (Accepted)**, sin indicar si el correo existe.
-- Si el correo está registrado, se genera un token seguro de un solo uso, válido por 1 hora, y se envía un correo con un enlace de restablecimiento.
+- **Registro y login de usuarios**
+  - Los usuarios pueden autenticarse con email y contraseña.
+  - El login retorna un token JWT necesario para acceder a rutas protegidas.
+  - Las rutas protegidas requieren el header:  
+    `Authorization: Bearer <token>`
 
-### 2. Recepción del enlace
+- **Bloqueo temporal por intentos fallidos**
+  - Si un usuario falla varias veces el login, su cuenta puede ser bloqueada temporalmente.
 
-- El usuario recibe un correo (usando **Mailtrap** en desarrollo) con un enlace similar a:
+---
 
-https://<FRONTEND_URL>/reset?token=EL_TOKEN_GENERADO
+### 2. Recuperación y restablecimiento de contraseña
 
-- El enlace contiene el token de recuperación.
+- **Solicitud de recuperación**
+  - Endpoint: `POST /api/v1/auth/forgot-password`
+  - El usuario envía su email y, si existe, recibe un enlace de recuperación (vía Mailtrap en desarrollo).
+  - El backend responde siempre con HTTP 202, sin revelar si el correo existe.
 
-### 3. Restablecimiento de contraseña
+- **Restablecimiento de contraseña**
+  - Endpoint: `POST /api/v1/auth/reset-password`
+  - El usuario envía el token recibido, la nueva contraseña y su confirmación.
+  - El backend valida el token, la fortaleza de la contraseña y la coincidencia.
+  - Si es válido, actualiza la contraseña (hasheada con bcrypt) y elimina el token.
 
-- El usuario accede al enlace y es dirigido a un formulario donde debe ingresar una nueva contraseña y confirmarla.
-- El frontend envía una petición **POST** a `/reset-password` con el token, la nueva contraseña y la confirmación.
+- **Validaciones y seguridad**
+  - Contraseña: mínimo 8 caracteres, mayúscula, minúscula y número.
+  - El token de recuperación expira en 1 hora y solo puede usarse una vez.
+  - Los mensajes de error son genéricos y accesibles.
 
-### 4. Validaciones
+---
 
-El backend verifica:
-- Que el token sea válido y no haya expirado.
-- Que la contraseña cumpla con los requisitos de seguridad (mínimo 8 caracteres, mayúscula, minúscula y número).
-- Que la confirmación coincida.
+### 3. Gestión de tareas personales
 
-Si todo es correcto:
-- Se actualiza la contraseña (hasheada con bcrypt).
-- El token se invalida inmediatamente.
-- Se responde con **HTTP 200** y mensaje de éxito.
+- **Obtener tareas del usuario autenticado**
+  - Endpoint: `GET /api/v1/tasks`
+  - Devuelve solo las tareas asociadas al usuario autenticado, ordenadas por fecha de creación ascendente.
 
-Si el token es inválido o expiró, se responde con un mensaje de error.
+- **Crear una nueva tarea**
+  - Endpoint: `POST /api/v1/tasks/new`
+  - Crea una tarea asociada al usuario autenticado.
+  - Campos requeridos: `title`, `description`.
+  - Campo opcional: `status` (`Por hacer`, `Haciendo`, `Hecho`).
 
-### 5. Manejo de errores
-
-- Si el correo no está registrado, la respuesta es siempre **202 (Accepted)** para no filtrar cuentas.
-- Errores internos retornan un mensaje genérico: `"Inténtalo de nuevo más tarde"`.
+- **(Opcional) Actualizar y eliminar tareas**
+  - Endpoints: `PUT /api/v1/tasks/:id`, `DELETE /api/v1/tasks/:id`
+  - Solo el usuario dueño puede modificar o eliminar sus tareas.
 
 ---
 
 ## 📡 Endpoints involucrados
 
+### Autenticación y recuperación
+- `POST /api/v1/auth/login`
+  - Body:
+    ```json
+    { "email": "usuario@correo.com", "password": "TuClave123" }
+    ```
 - `POST /api/v1/auth/forgot-password`
-- **Body:**  
-  ```json
-  { "email": "usuario@correo.com" }
-  ```
+  - Body:
+    ```json
+    { "email": "usuario@correo.com" }
+    ```
 - `POST /api/v1/auth/reset-password`
-- **Body:**  
-  ```json
-  { "token": "EL_TOKEN_GENERADO", "password": "NuevaContraseña123", "confirmPassword": "NuevaContraseña123" }
-  ```
+  - Body:
+    ```json
+    { "token": "EL_TOKEN_GENERADO", "password": "NuevaContraseña123", "confirmPassword": "NuevaContraseña123" }
+    ```
+
+### Tareas (requieren JWT)
+- `GET /api/v1/tasks`
+- `POST /api/v1/tasks/new`
+  - Body:
+    ```json
+    { "title": "Mi tarea", "description": "Descripción", "status": "Por hacer" }
+    ```
+
+---
+
+## 🛡️ Seguridad y manejo de errores
+
+- **JWT:** Todas las rutas de tareas requieren autenticación.
+- **Errores claros:**  
+  - Mensajes de error accesibles y sin revelar información sensible.
+  - Errores de autenticación retornan `401` o `423` según el caso.
+  - Errores internos retornan mensajes genéricos y loguean detalles en desarrollo.
+- **Validaciones:**  
+  - Contraseñas fuertes y confirmación obligatoria.
+  - Solo el usuario dueño puede ver o crear sus tareas.
+
+---
+
+## 🧪 Ejemplo de uso con curl
+
+**Login:**
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"usuario@correo.com","password":"TuClave123"}'
+```
+
+**Solicitud de recuperación:**
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/forgot-password \
+  -H "Content-Type: application/json" \
+  -d '{"email":"usuario@correo.com"}'
+```
+
+**Restablecimiento de contraseña:**
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/reset-password \
+  -H "Content-Type: application/json" \
+  -d '{"token":"EL_TOKEN_GENERADO","password":"NuevaContraseña123","confirmPassword":"NuevaContraseña123"}'
+```
+
+**Obtener tareas:**
+```bash
+curl -X GET http://localhost:3000/api/v1/tasks \
+  -H "Authorization: Bearer TU_TOKEN_JWT"
+```
+
+**Crear tarea:**
+```bash
+curl -X POST http://localhost:3000/api/v1/tasks/new \
+  -H "Authorization: Bearer TU_TOKEN_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Nueva tarea","description":"Descripción de la tarea"}'
+```
 
 ---
 
 ## 💡 Notas
 
-- El correo de recuperación se envía usando **Mailtrap** en desarrollo.
-- El enlace de recuperación solo puede usarse una vez y expira en 1 hora.
-- Los mensajes de error están diseñados para ser accesibles y no revelar información sensible.
-
----
-
-## 🧪 Ejemplo de petición con curl
-
-**Solicitud de recuperación:**
-```bash
-curl -X POST http://localhost:3000/api/v1/auth/forgot-password \
--H "Content-Type: application/json" \
--d '{"email":"usuario@correo.com"}'
-
-Restablecimiento de contraseña:
-
-curl -X POST http://localhost:3000/api/v1/auth/reset-password 
--H "Content-Type: application/json"
--d '{"token":"EL_TOKEN_GENERADO","password":"NuevaContraseña123","confirmPassword":"NuevaContraseña123"}'
+- El backend está preparado para integrarse con un frontend tipo Kanban o lista.
+- El envío de correos de recuperación usa Mailtrap en desarrollo.
+- El sistema es extensible para agregar más funcionalidades CRUD sobre tareas.
+- Los mensajes de error están diseñados para ser accesibles y no
