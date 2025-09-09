@@ -4,8 +4,25 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendResetEmail = require("../utils/sendResetEmail");
 
-
+/**
+ * Controlador para la autenticación y recuperación de contraseña de usuarios.
+ * Incluye login, solicitud de recuperación y restablecimiento de contraseña.
+ * @namespace AuthController
+ */
 const AuthController = {
+    /**
+   * Inicia sesión de usuario.
+   * Verifica credenciales, bloquea por intentos fallidos y retorna un token JWT si es exitoso.
+   * @async
+   * @function
+   * @param {import('express').Request} req - Objeto de solicitud Express (debe tener email y password en el body).
+   * @param {import('express').Response} res - Objeto de respuesta Express.
+   * @returns {Promise<void>}
+   * 
+   * @example
+   * // Body:
+   * // { "email": "usuario@correo.com", "password": "TuClave123" }
+   */
   async login(req, res) {
     const { email, password } = req.body;
     try {
@@ -50,10 +67,18 @@ const AuthController = {
   },
   /**
    * Solicita recuperación de contraseña.
-   * @param {Object} req - Express request.
-   * @param {Object} res - Express response.
+   * Envía un enlace de recuperación al correo si el usuario existe.
+   * Siempre responde con éxito para no revelar si el correo existe.
+   * @async
+   * @function
+   * @param {import('express').Request} req - Objeto de solicitud Express (debe tener email en el body).
+   * @param {import('express').Response} res - Objeto de respuesta Express.
+   * @returns {Promise<void>}
+   * 
+   * @example
+   * // Body:
+   * // { "email": "usuario@correo.com" }
    */
-
   async forgotPassword(req, res) {
     const { email } = req.body;
     try {
@@ -71,13 +96,19 @@ const AuthController = {
       res.status(500).json({ message: "Inténtalo de nuevo más tarde" });
     }
   },
-
-    /**
-   * Restablece la contraseña usando un token.
-   * @param {Object} req - Express request.
-   * @param {Object} res - Express response.
+  /**
+   * Restablece la contraseña usando un token de recuperación.
+   * Valida el token, la fortaleza y coincidencia de la contraseña, y actualiza la contraseña del usuario.
+   * @async
+   * @function
+   * @param {import('express').Request} req - Objeto de solicitud Express (debe tener token, password y confirmPassword en el body).
+   * @param {import('express').Response} res - Objeto de respuesta Express.
+   * @returns {Promise<void>}
+   * 
+   * @example
+   * // Body:
+   * // { "token": "TOKEN_RECIBIDO", "password": "NuevaClave123", "confirmPassword": "NuevaClave123" }
    */
-
   async resetPassword(req, res) {
     const { token, password, confirmPassword } = req.body;
     try {
