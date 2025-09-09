@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 const TaskController = require("../controllers/TaskController");
 
@@ -8,7 +9,7 @@ const TaskController = require("../controllers/TaskController");
  * @description Retrieve all tasks.
  * @access Public
  */
-router.get("/", (req, res) => TaskController.getAll(req, res));
+router.get("/", auth, (req, res) => TaskController.getAll(req, res));
 
 /**
  * @route GET /tasks/:id
@@ -25,7 +26,7 @@ router.get("/:id", (req, res) => TaskController.read(req, res));
  * @body {string} description - The description of the task.
  * @access Public
  */
-router.post("/new", (req, res) => TaskController.create(req, res));
+router.post("/new",auth, (req, res) => TaskController.create(req, res));
 
 /**
  * @route PUT /tasks/:id

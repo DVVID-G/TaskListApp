@@ -2,6 +2,8 @@ const express = require("express");
 const userRoutes = require("./userRoutes");
 const authRoutes = require("./AuthRoutes");
 const taskRoutes = require("./taskRoutes");
+const auth = require("../middleware/auth");
+const TaskController = require("../controllers/TaskController");
 
 const router = express.Router();
 
@@ -19,6 +21,8 @@ const router = express.Router();
 router.use("/users", userRoutes);
 router.use("/auth", authRoutes);
 router.use("/tasks", taskRoutes);
+router.get('/tasks', auth, TaskController.getAll);
+router.post('/tasks', auth, TaskController.create);
 
 /**
  * Export the main router instance.
