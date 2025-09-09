@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
-/**
- * User schema definition.
- * 
- * Represents application users stored in MongoDB.
- * Includes authentication fields and automatic timestamps.
- */
 const userSchema = new mongoose.Schema({
   nombres: {
     type: String,
@@ -41,29 +36,41 @@ const userSchema = new mongoose.Schema({
     required: [true, 'La contraseña es obligatoria'],
     minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
     validate: {
-        validator: function(value) {
-            return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(value);
-        },
-    message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial'
-  },
-  confirmPassword: {
-    type: String,
-    required: [true, 'La confirmación de contraseña es obligatoria'],
-    validate: {
       validator: function(value) {
-        return value === this.password;
+        return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(value);
       },
-      message: 'Las contraseñas no coinciden'
+      message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial'
     }
-},
-}, },
-{
+  },
+  resetToken: String,
+  resetTokenExpires: Date,
+}, {
   timestamps: true
 });
 
+// Campo virtual para confirmPassword (no se guarda en la BD)
+userSchema.virtual('confirmPassword')
+  .set(function(value) { this._confirmPassword = value; })
+  .get(function() { return this._confirmPassword; });
 
-/**
- * Mongoose model for the User collection.
- * Provides an interface to interact with user documents.
- */
+// Hook de validación para comparar password y confirmPassword
+userSchema.pre('validate', function(next) {
+  if (this.isNew || this.isModified('password')) {
+    if (!this._confirmPassword) {
+      this.invalidate('confirmPassword', 'La confirmación de contraseña es obligatoria');
+    }
+    if (this.password !== this._confirmPassword) {
+      this.invalidate('confirmPassword', 'Las contraseñas no coinciden');
+    }
+  }
+  next();
+});
+
+userSchema.pre('save', async function(next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
+
 module.exports = mongoose.model("User", userSchema);

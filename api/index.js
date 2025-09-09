@@ -33,7 +33,7 @@ app.use("/api/v1", routes);
  * Health check endpoint.
  * Useful to verify that the server is up and running.
  */
-app.get("/", (req, res) => res.send("Server is running"));
+app.get("/", (req, res) => res.send("Welcome to the API server! Tasklistapp is running."));
 
 /**
  * Start the server only if this file is run directly
