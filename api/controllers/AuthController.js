@@ -8,8 +8,13 @@ const AuthController = {
   async login(req, res) {
     const { email, password } = req.body;
     try {
-      const user = await UserDAO.model.findOne({ email }).select("+password bloqueada intentosFallidos");
-      if (!user) {
+      const user = await UserDAO.model.findOne({ email });
+      // Log para depuración
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Hash guardado en BD:", user && user.password);
+        console.log("Clave ingresada:", password);
+      }
+      if (!user || !user.password) {
         return res.status(401).json({ message: "Credenciales inválidas" });
       }
       if (user.bloqueada) {
@@ -42,6 +47,11 @@ const AuthController = {
       res.status(500).json({ message: "Inténtalo de nuevo más tarde" });
     }
   },
+  /**
+   * Solicita recuperación de contraseña.
+   * @param {Object} req - Express request.
+   * @param {Object} res - Express response.
+   */
 
   async forgotPassword(req, res) {
     const { email } = req.body;
@@ -60,6 +70,12 @@ const AuthController = {
       res.status(500).json({ message: "Inténtalo de nuevo más tarde" });
     }
   },
+
+    /**
+   * Restablece la contraseña usando un token.
+   * @param {Object} req - Express request.
+   * @param {Object} res - Express response.
+   */
 
   async resetPassword(req, res) {
     const { token, password, confirmPassword } = req.body;
