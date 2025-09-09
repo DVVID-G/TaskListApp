@@ -77,7 +77,8 @@ const AuthController = {
       if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
         return res.status(400).json({ message: "La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula y número" });
       }
-      user.password = await bcrypt.hash(password, 10);
+      user.password = password;
+      user.confirmPassword = confirmPassword;
       user.resetToken = undefined;
       user.resetTokenExpires = undefined;
       await user.save();
