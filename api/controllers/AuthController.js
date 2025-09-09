@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendResetEmail = require("../utils/sendResetEmail");
 
+
 const AuthController = {
   async login(req, res) {
     const { email, password } = req.body;
