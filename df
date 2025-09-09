@@ -1,0 +1,117 @@
+[33mcommit c7b570ffefe44aaaf809559288e757d841a61def[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/us5/getTask/davidgiraldo[m[33m)[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Mon Sep 8 22:08:12 2025 -0500
+
+    se revisa funcionalidad y se encuentran bugs en login
+
+[33mcommit d774360e6d7e30e8359a71c3c6ff431d2c7790b3[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m
+Merge: 6fce2a2 728ea42
+Author: David Giraldo <108377401+DVVID-G@users.noreply.github.com>
+Date:   Mon Sep 8 19:40:21 2025 -0500
+
+    Merge pull request #5 from DVVID-G/feature/us3/recoverypassword-davidgiraldo
+    
+    Feature/us3/recoverypassword davidgiraldo
+
+[33mcommit 728ea42d29a8f1f48ccfc593567afd1b1ad9f6cc[m[33m ([m[1;31morigin/feature/us3/recoverypassword-davidgiraldo[m[33m, [m[1;32mfeature/us3/recoverypassword-davidgiraldo[m[33m)[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Mon Sep 8 19:39:11 2025 -0500
+
+    Se termina flujo recovery-password, se agrega readme,listo para test
+
+[33mcommit 4cf090bee55d0b0b4893fc9769986ed00f7b85be[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Mon Sep 8 18:02:52 2025 -0500
+
+    se configura ruta forgot-password y se realizan pruebas con api mailtrap
+
+[33mcommit 6fce2a29c9720f8d38e1540d903f59eaae28cfc1[m
+Merge: fb22b73 d0da6e9
+Author: David Giraldo <108377401+DVVID-G@users.noreply.github.com>
+Date:   Mon Sep 8 17:07:32 2025 -0500
+
+    Merge pull request #4 from DVVID-G/feature/us2/logout/davidgiraldo
+    
+    se cambian parametros en controlador
+
+[33mcommit d0da6e983369b38c95a208decb29b9d6604af898[m[33m ([m[1;31morigin/feature/us2/logout/davidgiraldo[m[33m, [m[1;32mfeature/us2/logout/davidgiraldo[m[33m)[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Mon Sep 8 17:06:23 2025 -0500
+
+    se cambian parametros en controlador
+
+[33mcommit fb22b73bb4046bbb1d922dd78e2ceab075af12a7[m
+Merge: d4fdc67 97a9dad
+Author: David Giraldo <108377401+DVVID-G@users.noreply.github.com>
+Date:   Sat Sep 6 21:50:36 2025 -0500
+
+    Merge pull request #3 from DVVID-G/feature/login-davidgiraldo
+    
+    se cambia duración del token a 2h
+
+[33mcommit 97a9dad51ddeac9452725d3b88607fbac6fa1a1d[m[33m ([m[1;31morigin/feature/login-davidgiraldo[m[33m, [m[1;32mfeature/login-davidgiraldo[m[33m)[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Sat Sep 6 20:57:29 2025 -0500
+
+    se cambia duración del token a 2h
+
+[33mcommit d4fdc672cfc44891a6d95f239e3bdde5b6fd7e3d[m
+Merge: b4821e0 3933add
+Author: David Giraldo <108377401+DVVID-G@users.noreply.github.com>
+Date:   Sat Sep 6 20:39:25 2025 -0500
+
+    Merge pull request #2 from DVVID-G/feature/login-davidgiraldo
+    
+    Feature/login davidgiraldo
+
+[33mcommit 3933add4396d96629187b424d284eef1fb4089a6[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Sat Sep 6 20:37:52 2025 -0500
+
+    se corrige bug en password
+
+[33mcommit c3cb60edbc2b80800be4a13cb621a62e01e92a15[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Sat Sep 6 01:04:16 2025 -0500
+
+    se realiza consulta exitosa de token
+
+[33mcommit 99a187f512c2cbe10c11770eb5f412ea1c765c34[m
+Merge: f7201fc b4821e0
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Sat Sep 6 00:54:50 2025 -0500
+
+    Merge branch 'develop' of https://github.com/DVVID-G/TaskListApp into feature/login-davidgiraldo
+
+[33mcommit f7201fccb315661eca4d104429aabedb924220ef[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Sat Sep 6 00:42:32 2025 -0500
+
+    implementación de jwt
+
+[33mcommit b4821e0a447f1c1e4f318cc5032bd77f3bec69be[m
+Merge: b0c7dd3 4d4aaff
+Author: David Giraldo <108377401+DVVID-G@users.noreply.github.com>
+Date:   Fri Sep 5 23:39:54 2025 -0500
+
+    Merge pull request #1 from DVVID-G/Us-1/sign-up/DavidGiraldo
+    
+    Us 1/sign up/david giraldo
+
+[33mcommit 4d4aaff2964bc4901f8e29bd15a6aaa4d536c476[m[33m ([m[1;31morigin/Us-1/sign-up/DavidGiraldo[m[33m, [m[1;32mUs-1/sign-up/DavidGiraldo[m[33m)[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Fri Sep 5 23:22:38 2025 -0500
+
+    Se cambia request 400 por 401 segun criterio de aceptación cuando el email ya esta registrado
+
+[33mcommit 3e5f1b552bededcb6b0124b5620ae3b3fa58d6e1[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Fri Sep 5 23:13:07 2025 -0500
+
+    implementación de bcrypt para hashear contraseña
+
+[33mcommit b0c7dd3a4c7313e7b88b8fc18aaed682f093e520[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: dvvid-g <giraldo.jose@correounivalle.edu.co>
+Date:   Fri Sep 5 22:53:51 2025 -0500
+
+    Creación del miniproyecto1
