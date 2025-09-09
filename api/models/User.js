@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
-/**
- * User schema definition.
- * 
- * Represents application users stored in MongoDB.
- * Includes authentication fields and automatic timestamps.
- */
+
 const userSchema = new mongoose.Schema({
   nombres: {
     type: String,
@@ -41,14 +36,15 @@ const userSchema = new mongoose.Schema({
     required: [true, 'La contraseña es obligatoria'],
     minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
     validate: {
-        validator: function(value) {
-            return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(value);
-        },
-    message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial'
+      validator: function(value) {
+        return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(value);
+      },
+      message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial'
+    }
   },
-
-}, },
-{
+  resetToken: String,
+  resetTokenExpires: Date,
+}, {
   timestamps: true
 });
 
@@ -74,9 +70,7 @@ userSchema.pre('save', async function(next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);
   }
+  next();
 });
-/**
- * Mongoose model for the User collection.
- * Provides an interface to interact with user documents.
- */
+
 module.exports = mongoose.model("User", userSchema);

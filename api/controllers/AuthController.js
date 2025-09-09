@@ -1,36 +1,31 @@
-// api/controllers/AuthController.js
 const UserDAO = require("../dao/UserDAO");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const sendResetEmail = require("../utils/sendResetEmail");
 
 const AuthController = {
   async login(req, res) {
     const { email, password } = req.body;
     try {
-      // Buscar usuario por email usando el DAO
-      const user = await UserDAO.model.findOne({ email }).select("+password");
+      const user = await UserDAO.model.findOne({ email }).select("+password bloqueada intentosFallidos");
       if (!user) {
         return res.status(401).json({ message: "Credenciales inválidas" });
       }
       if (user.bloqueada) {
         return res.status(423).json({ message: "Cuenta temporalmente bloqueada" });
       }
-      // Comparar contraseña
       const valid = await bcrypt.compare(password, user.password);
       if (!valid) {
-        // Aquí puedes incrementar el contador de intentos fallidos usando el DAO
         await UserDAO.model.updateOne({ _id: user._id }, { $inc: { intentosFallidos: 1 } });
         return res.status(401).json({ message: "Credenciales inválidas" });
       }
-      // Si login exitoso, reinicia el contador de intentos
       await UserDAO.model.updateOne({ _id: user._id }, { $set: { intentosFallidos: 0 } });
-      // Generar JWT
       const token = jwt.sign(
         { id: user._id, email: user.email },
         process.env.JWT_SECRET,
         { expiresIn: "2h" }
       );
-      // Retornar token y datos públicos
       res.json({
         token,
         user: {
@@ -40,11 +35,56 @@ const AuthController = {
           email: user.email
         }
       });
-    } 
-    catch (error) {
+    } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error(error);
       }
+      res.status(500).json({ message: "Inténtalo de nuevo más tarde" });
+    }
+  },
+
+  async forgotPassword(req, res) {
+    const { email } = req.body;
+    try {
+      const user = await UserDAO.model.findOne({ email });
+      if (user) {
+        const token = crypto.randomBytes(32).toString('hex');
+        user.resetToken = token;
+        user.resetTokenExpires = Date.now() + 60 * 60 * 1000; // 1 hora
+        await user.save();
+        await sendResetEmail(user.email, token);
+      }
+      res.status(202).json({ message: "Si el correo existe, se enviará un enlace para restablecer la contraseña." });
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') console.error(error);
+      res.status(500).json({ message: "Inténtalo de nuevo más tarde" });
+    }
+  },
+
+  async resetPassword(req, res) {
+    const { token, password, confirmPassword } = req.body;
+    try {
+      const user = await UserDAO.model.findOne({
+        resetToken: token,
+        resetTokenExpires: { $gt: Date.now() }
+      });
+      if (!user) {
+        return res.status(400).json({ message: "Enlace inválido o caducado" });
+      }
+      if (password !== confirmPassword) {
+        return res.status(400).json({ message: "Las contraseñas no coinciden" });
+      }
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
+        return res.status(400).json({ message: "La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula y número" });
+      }
+      user.password = password;
+      user.confirmPassword = confirmPassword;
+      user.resetToken = undefined;
+      user.resetTokenExpires = undefined;
+      await user.save();
+      res.status(200).json({ message: "Contraseña actualizada" });
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') console.error(error);
       res.status(500).json({ message: "Inténtalo de nuevo más tarde" });
     }
   }
