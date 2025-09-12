@@ -7,6 +7,8 @@ const { connectDB } = require("./config/database");
 
 const app = express();
 
+module.exports = app;
+
 /**
  * Middleware configuration
  * - Parse JSON request bodies
@@ -15,7 +17,7 @@ const app = express();
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors());
 
 /**
  * Initialize database connection.
@@ -46,5 +48,3 @@ if (require.main === module) {
         console.log(`Server running on http://localhost:${PORT}`);
     });
 }
-
-

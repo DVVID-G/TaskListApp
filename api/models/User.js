@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
-
+/**
+ * User schema definition.
+ *
+ * Represents application users stored in MongoDB.
+ * Includes authentication fields and automatic timestamps.
+ */
 const userSchema = new mongoose.Schema({
   nombres: {
     type: String,
