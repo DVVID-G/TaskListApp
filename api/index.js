@@ -7,6 +7,8 @@ const { connectDB } = require("./config/database");
 
 const app = express();
 
+module.exports = app;
+
 /**
  * Middleware configuration
  * - Parse JSON request bodies
