@@ -7,6 +7,8 @@ const { connectDB } = require("./config/database");
 
 const app = express();
 
+module.exports = app;
+
 /**
  * Middleware configuration
  * - Parse JSON request bodies
@@ -15,7 +17,7 @@ const app = express();
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors())
 
 /**
  * Initialize database connection.
@@ -33,18 +35,16 @@ app.use("/api/v1", routes);
  * Health check endpoint.
  * Useful to verify that the server is up and running.
  */
-app.get("/", (req, res) => res.send("Server is running"));
+app.get("/", (req, res) => res.send("Welcome to the API server! Tasklistapp is running."));
 
 /**
  * Start the server only if this file is run directly
  * (prevents multiple servers when testing with imports).
  */
 if (require.main === module) {
-  const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 3000;
 
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
 }
-
-module.exports = app;
