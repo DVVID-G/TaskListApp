@@ -7,7 +7,10 @@ const { connectDB } = require("./config/database");
 
 const app = express();
 
-module.exports = app;
+app.use(cors({
+  origin: ["http://localhost:5173"]
+}));
+
 
 /**
  * Middleware configuration
@@ -17,7 +20,7 @@ module.exports = app;
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors());
 
 /**
  * Initialize database connection.
@@ -48,3 +51,5 @@ if (require.main === module) {
         console.log(`Server running on http://localhost:${PORT}`);
     });
 }
+
+module.exports = app;
