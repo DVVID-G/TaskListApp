@@ -1,11 +1,12 @@
 {
-  "name": "TaskListApp-server",
+  "name": "to-do-list-server",
   "version": "1.0.0",
   "description": "",
-  "main": "api/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "node api/index.js",
-    "dev": "node --watch api/index.js"
+    "dev": "node --watch api/index.js",
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +21,9 @@
     "mongodb": "^6.19.0",
     "mongoose": "^8.18.0",
     "nodemailer": "^6.10.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
 }
