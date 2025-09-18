@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node api/index.js",
     "dev": "node --watch api/index.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "docs": "jsdoc -c jsdoc.json"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "jsdoc": "^4.0.4",
     "supertest": "^6.3.4"
   }
 }

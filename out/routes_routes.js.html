@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: routes/routes.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,48 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: routes/routes.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const express = require("express");
+const userRoutes = require("./userRoutes");
+const authRoutes = require("./AuthRoutes");
+const taskRoutes = require("./taskRoutes");
+const auth = require("../middleware/auth");
+const TaskController = require("../controllers/TaskController");
 
+const router = express.Router();
 
-    <h3> </h3>
+/**
+ * Mount user-related routes.
+ *
+ * All routes defined in {@link userRoutes} will be accessible under `/users`.
+ * Example:
+ *   - GET  /users        → Get all users
+ *   - POST /users        → Create a new user
+ *   - GET  /users/:id    → Get a user by ID
+ *   - PUT  /users/:id    → Update a user by ID
+ *   - DELETE /users/:id  → Delete a user by ID
+ */
+router.use("/users", userRoutes);
+router.use("/auth", authRoutes);
+router.use("/tasks", taskRoutes);
+router.get('/tasks', auth, TaskController.getAll);
+router.post('/tasks', auth, TaskController.create);
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+/**
+ * Export the main router instance.
+ * This is imported in `index.js` and mounted under `/api/v1`.
+ */
+module.exports = router;</code></pre>
+        </article>
+    </section>
 
 
 

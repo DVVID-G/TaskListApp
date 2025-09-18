@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: controllers/UserController.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,47 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: controllers/UserController.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const GlobalController = require("./GlobalController");
+const UserDAO = require("../dao/UserDAO");
 
+/**
+ * Controller class for managing User resources.
+ * 
+ * Extends the generic {@link GlobalController} to inherit
+ * CRUD operations, using the {@link UserDAO} as the data access layer.
+ */
+class UserController extends GlobalController {
+    /**
+     * Create a new UserController instance.
+     * 
+     * The constructor passes the UserDAO to the parent class so that
+     * all inherited methods (create, read, update, delete, getAll)
+     * operate on the User model.
+     */
+    constructor() {
+        super(UserDAO);
+    }
+}
 
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+/**
+ * Export a singleton instance of UserController.
+ * 
+ * This allows the same controller to be reused across routes
+ * without creating multiple instances.
+ */
+module.exports = new UserController();
+</code></pre>
+        </article>
+    </section>
 
 
 
