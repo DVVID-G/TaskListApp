@@ -22,6 +22,10 @@ const taskSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'El usuario es obligatorio']
+  },
+  expectedDate: {
+    type: Date,
+    required: [true, 'La fecha esperada es obligatoria']
   }
 }, {
   timestamps: true
