@@ -47,8 +47,8 @@ class TaskController extends GlobalController {
     async create(req, res) {
         try {
             const userId = req.user.id;
-            const { title, description, status } = req.body;
-            const task = await TaskDAO.model.create({ title, description, status, user: userId });
+            const { title, description, status, expectedDate } = req.body;
+            const task = await TaskDAO.model.create({ title, description, status, user: userId, expectedDate});
             res.status(201).json(task);
         } catch (error) {
             if (process.env.NODE_ENV === 'development') console.error(error);
